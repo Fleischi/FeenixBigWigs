@@ -1,0 +1,1 @@
+Fixes for BigWigs according to the way the boss fights work on feenix
