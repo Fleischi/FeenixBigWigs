@@ -355,13 +355,18 @@ end
 
 function mod:Whirlwind(_, spellID)
 	if db.whirlwind then
+		-- Not sure, might be an Alert if spellID is set
 		self:IfMessage(L["whirlwind_gain"], "Important", spellID, "Alert")
+		-- in 12 seconds show a message that WW is over
 		self:ScheduleEvent("ww1", "BigWigs_Message", 12, L["whirlwind_fade"], "Attention", nil, nil, nil, spellID)
+		-- Show a bar with 12 seconds duration for the Whirlwind
 		self:Bar(L["whirlwind_bar"], 12, spellID)
+		-- in 12 seconds start the cooldown of WW a new
 		self:ScheduleEvent("BWLeoWhirlwind", self.WhirlwindBar, 12, self)
 	end
 end
 
+-- Announcing to players that they have an Inner Demon
 function mod:Whisper(player)
 	if db.whisper then
 		beDemon[player] = true
@@ -370,13 +375,17 @@ function mod:Whisper(player)
 	end
 end
 
+-- Mindcontrol Warning, no MC atm on feenix
 function mod:Madness(player)
 	if db.mindcontrol then
 		self:IfMessage(fmt(L["mindcontrol_warning"], player), "Urgent", 37749, "Alert")
 	end
 end
 
+-- Events that fire when Leo yells
 function mod:CHAT_MSG_MONSTER_YELL(msg)
+	-- Bad naming should be engage trigger
+	-- Leo is unbanish, start all timers that are needed
 	if msg == L["enrage_trigger"] then
 		imagewarn = nil
 		for k in pairs(beDemon) do beDemon[k] = nil end
@@ -391,6 +400,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if db.whirlwind then
 			self:WhirlwindBar()
 		end
+	-- Demonphase started
 	elseif msg == L["phase_trigger"] then
 		if db.phase then
 			self:CancelScheduledEvent("demon1")
@@ -411,6 +421,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if db.whisper then
 			self:Bar(L["whisper_soon"], 23, "Spell_Shadow_ManaFeed")
 		end
+	-- Last phase started (Split at 15%)
 	elseif msg == L["image_trigger"] then
 		self:CancelScheduledEvent("bwdemon")
 		self:CancelScheduledEvent("normal1")
@@ -423,17 +434,21 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
+-- Start a new Bar for next demonphase
 function mod:DemonSoon()
 	self:Message(L["phase_normal"], "Important")
 	self:ScheduleEvent("demon1", "BigWigs_Message", 40, L["phase_demonsoon"], "Urgent")
 	self:Bar(L["demon_nextbar"], 45, "Spell_Shadow_Metamorphosis")
 end
 
+-- Set Cooldown for WW to 15 seconds
+-- and warn in 15 Seconds that the cooldown is over
 function mod:WhirlwindBar()
 	self:Bar(L["whirlwind_bar2"], 15, "Ability_Whirlwind")
 	self:ScheduleEvent("ww2", "BigWigs_Message", 15, L["whirlwind_warn"], "Attention")
 end
 
+-- Check for Splitphase
 function mod:UNIT_HEALTH(msg)
 	if not db.image then return end
 	if UnitName(msg) == boss then
