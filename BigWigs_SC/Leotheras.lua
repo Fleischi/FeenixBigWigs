@@ -437,8 +437,8 @@ end
 -- Start a new Bar for next demonphase
 function mod:DemonSoon()
 	self:Message(L["phase_normal"], "Important")
-	self:ScheduleEvent("demon1", "BigWigs_Message", 55, L["phase_demonsoon"], "Urgent")
-	self:Bar(L["demon_nextbar"], 60, "Spell_Shadow_Metamorphosis")
+	self:ScheduleEvent("demon1", "BigWigs_Message", 40, L["phase_demonsoon"], "Urgent")
+	self:Bar(L["demon_nextbar"], 45, "Spell_Shadow_Metamorphosis")
 end
 
 -- Set Cooldown for WW to 15 seconds
