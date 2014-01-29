@@ -338,6 +338,7 @@ mod.revision = tonumber(("$Revision: 4723 $"):sub(12, -3))
 
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Whirlwind", 37640)
+	self:AddCombatListener("SPELL_AURA_REMOVED", "WhirlwindEnd", 37640)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Whisper", 37676)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Madness", 37749)
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
@@ -353,16 +354,26 @@ end
 --      Event Handlers      --
 ------------------------------
 
+-- Whirlwind Buff gained
 function mod:Whirlwind(_, spellID)
 	if db.whirlwind then
 		-- Not sure, might be an Alert if spellID is set
 		self:IfMessage(L["whirlwind_gain"], "Important", spellID, "Alert")
 		-- in 12 seconds show a message that WW is over
-		self:ScheduleEvent("ww1", "BigWigs_Message", 12, L["whirlwind_fade"], "Attention", nil, nil, nil, spellID)
+		-- self:ScheduleEvent("ww1", "BigWigs_Message", 12, L["whirlwind_fade"], "Attention", nil, nil, nil, spellID)
 		-- Show a bar with 12 seconds duration for the Whirlwind
 		self:Bar(L["whirlwind_bar"], 12, spellID)
 		-- in 12 seconds start the cooldown of WW a new
-		self:ScheduleEvent("BWLeoWhirlwind", self.WhirlwindBar, 12, self)
+		-- self:ScheduleEvent("BWLeoWhirlwind", self.WhirlwindBar, 12, self)
+	end
+end
+
+-- Whirlwind Buff faded
+function mod:WhirlwindEnd(_, spellID)
+	if db.whirlwind then
+		-- start new timer
+		self:IfMessage(L["whirlwind_fade"], "Important", spellID, "Alert")
+		self:WhirlwindBar(25)
 	end
 end
 
@@ -398,7 +409,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:Enrage(600)
 		end
 		if db.whirlwind then
-			self:WhirlwindBar()
+			self:WhirlwindBar(18)
 		end
 	-- Demonphase started
 	elseif msg == L["phase_trigger"] then
@@ -411,7 +422,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:ScheduleEvent("bwdemon", self.DemonSoon, 60, self)
 		end
 		if db.whirlwind then
-			self:CancelScheduledEvent("ww1")
+			--self:CancelScheduledEvent("ww1")
 			self:CancelScheduledEvent("ww2")
 			self:CancelScheduledEvent("BWLeoWhirlwind")
 			self:TriggerEvent("BigWigs_StopBar", self, L["whirlwind_bar"])
@@ -437,15 +448,18 @@ end
 -- Start a new Bar for next demonphase
 function mod:DemonSoon()
 	self:Message(L["phase_normal"], "Important")
-	self:ScheduleEvent("demon1", "BigWigs_Message", 40, L["phase_demonsoon"], "Urgent")
-	self:Bar(L["demon_nextbar"], 45, "Spell_Shadow_Metamorphosis")
+	self:ScheduleEvent("demon1", "BigWigs_Message", 55, L["phase_demonsoon"], "Urgent")
+	self:Bar(L["demon_nextbar"], 60, "Spell_Shadow_Metamorphosis")
 end
 
 -- Set Cooldown for WW to 15 seconds
 -- and warn in 15 Seconds that the cooldown is over
-function mod:WhirlwindBar()
-	self:Bar(L["whirlwind_bar2"], 15, "Ability_Whirlwind")
-	self:ScheduleEvent("ww2", "BigWigs_Message", 15, L["whirlwind_warn"], "Attention")
+function mod:WhirlwindBar(duration)
+	if not duration then
+		duration = 12
+	end
+	self:Bar(L["whirlwind_bar2"], duration, "Ability_Whirlwind")
+	self:ScheduleEvent("ww2", "BigWigs_Message", duration, L["whirlwind_warn"], "Attention")
 end
 
 -- Check for Splitphase
