@@ -206,7 +206,7 @@ mod.zonename = BZ["Serpentshrine Cavern"]
 mod.enabletrigger = boss
 mod.guid = 21216
 mod.toggleoptions = {"stance", "mark", "enrage", -1, "sludge", "icon", "tomb", "proximity", "bosskill"}
-mod.revision = tonumber(("$Revision: 4619 $"):sub(12, -3))
+mod.revision = tonumber(("$Revision: 4620 $"):sub(12, -3))
 mod.proximityCheck = function( unit ) return CheckInteractDistance( unit, 3 ) end
 mod.proximitySilent = true
 
@@ -217,7 +217,7 @@ mod.proximitySilent = true
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Tomb", 38235)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Sludge", 38246)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Mark",
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Mark",
 		38215, 38216, 38217, 38218, 38231, 40584, --Mark of Hydross - 10, 25, 50, 100, 250, 500
 		38219, 38220, 38221, 38222, 38230, 40583 --Mark of Corruption - 10, 25, 50, 100, 250, 500
 	)
@@ -257,11 +257,16 @@ end
 local debuffBar = "%d%% - %s"
 local poisonName = GetSpellInfo(38219)
 local cleanName = GetSpellInfo(38215)
+local lastMark = 0
 function mod:Mark(_, spellID, _, _, spellName)
 	self:TriggerEvent("BigWigs_StopBar", self, fmt(debuffBar, curPerc, poisonName))
 	self:TriggerEvent("BigWigs_StopBar", self, fmt(debuffBar, curPerc, cleanName))
 	if db.mark then
-		self:IfMessage(fmt(L["debuff_warn"], curPerc), "Important", spellID, "Alert")
+		local time = GetTime()
+		if (time - lastMark) > 3 then
+			self:IfMessage(fmt(L["debuff_warn"], curPerc), "Important", spellID, "Alert")
+			lastMark = time
+		end
 		if spellID == 38215 or spellID == 38219 then
 			curPerc = 25
 		elseif spellID == 38216 or spellID == 38220 then
