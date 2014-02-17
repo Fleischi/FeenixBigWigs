@@ -24,17 +24,17 @@ L:RegisterTranslations("enUS", function() return {
 
 	engage_trigger1 = "I did not wish to lower myself by engaging your kind, but you leave me little choice...",
 	engage_trigger2 = "I spit on you, surface filth!",
-	engage_trigger3 = "Victory to Lord Illidan! ",
+	engage_trigger3 = "Victory to Lord Illidan!",
 	engage_trigger4 = "I'll split you from stem to stern!",
 	engage_trigger5 = "Death to the outsiders!",
 	engage_message = "Entering Phase 1",
 
 	phase = "Phase warnings",
 	phase_desc = "Warn when Vashj goes into the different phases.",
-	phase2_trigger = "The time is now! Leave none standing! ",
+	phase2_trigger = "The time is now! Leave none standing!",
 	phase2_soon_message = "Phase 2 soon!",
 	phase2_message = "Phase 2, adds incoming!",
-	phase3_trigger = "You may want to take cover. ",
+	phase3_trigger = "You may want to take cover.",
 	phase3_message = "Phase 3 - Enrage in 4min!",
 
 	static = "Static Charge",
@@ -453,7 +453,7 @@ mod.enabletrigger = boss
 mod.guid = 21212
 mod.wipemobs = {elite, strider, L["Tainted Elemental"]}
 mod.toggleoptions = {"phase", -1, "static", "icon", -1, "elemental", "strider", "naga", "loot", "barrier", "proximity", "bosskill"}
-mod.revision = tonumber(("$Revision: 4730 $"):sub(12, -3))
+mod.revision = tonumber(("$Revision: 4731 $"):sub(12, -3))
 mod.proximityCheck = function( unit ) return CheckInteractDistance( unit, 3 ) end
 
 ------------------------------
@@ -573,7 +573,8 @@ function mod:RepeatNaga()
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L["phase2_trigger"] then
+	-- fix for extra space in yell triggers
+	if string.find(msg, L["phase2_trigger"]) then
 		self:TriggerEvent("BigWigs_RemoveRaidIcon")
 		if db.phase then
 			self:Message(L["phase2_message"], "Important", nil, "Alarm")
@@ -585,13 +586,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		end
 		self:RepeatStrider()
 		self:RepeatNaga()
-	elseif msg == L["engage_trigger1"] or msg == L["engage_trigger2"] or msg == L["engage_trigger3"]
-		or msg == L["engage_trigger4"] or msg == L["engage_trigger5"] then
+	elseif string.find(msg, L["engage_trigger1"]) or string.find(msg, L["engage_trigger2"]) or string.find(msg, L["engage_trigger3"])
+		or string.find(msg, L["engage_trigger4"]) or string.find(msg, L["engage_trigger5"]) then
 
 		phaseTwoAnnounced = nil
 		shieldsFaded = 0
 		self:Message(L["engage_message"], "Attention")
-	elseif db.phase and msg == L["phase3_trigger"] then
+	elseif db.phase and string.find(msg, L["phase3_trigger"]) then
 		self:Message(L["phase3_message"], "Important", nil, "Alarm")
 		self:Enrage(240, nil, true)
 
