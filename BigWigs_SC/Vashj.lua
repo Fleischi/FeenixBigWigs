@@ -29,6 +29,14 @@ L:RegisterTranslations("enUS", function() return {
 	engage_trigger5 = "Death to the outsiders!",
 	engage_message = "Entering Phase 1",
 
+	entangle = "Entangle"
+	entangle_desc = "Warn about the cooldown of entangle"
+	entangle_bar = "~Entangle Cooldown~"
+
+	shockblast = "Shock Blast warnings"
+	shockblast_desc = "Warn about the cooldown of Shock Blast"
+	shockblast_bar = "~Shock Blast Cooldown~"
+
 	phase = "Phase warnings",
 	phase_desc = "Warn when Vashj goes into the different phases.",
 	phase2_trigger = "The time is now! Leave none standing!",
@@ -463,8 +471,11 @@ mod.proximityCheck = function( unit ) return CheckInteractDistance( unit, 3 ) en
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Charge", 38280)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "LootUpdate", 38132)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Entangled", 38316)
 	self:AddCombatListener("SPELL_AURA_REMOVED", "ChargeRemove", 38280)
 	self:AddCombatListener("SPELL_AURA_REMOVED", "BarrierRemove", 38112)
+	self:AddCombatListener("SPELL_DAMAGE", "ShockBlast", 38509)
+	self:AddCombatListener("SPELL_MISSED", "ShockBlast", 38509)
 	self:AddCombatListener("UNIT_DIED", "Deaths")
 
 	self:RegisterEvent("CHAT_MSG_LOOT")
@@ -483,6 +494,17 @@ end
 ------------------------------
 --      Event Handlers      --
 ------------------------------
+
+function mod:Entangled()
+	local spellID = 38316
+	self:Bar(L["entangle_bar"], 20, spellID)
+end
+
+function mod:ShockBlast()
+	local spellID = 38509
+	self:IfMessage("Shock Blast casted!", "Important", spellID)
+	self:Bar(L["shockblast_bar"], 10, spellID)
+end
 
 function mod:Charge(player, spellID)
 	if db.static then
@@ -556,20 +578,26 @@ do
 	end
 end
 
-function mod:RepeatStrider()
-	if db.strider then
-		self:Bar(L["strider_bar"], 63, "Spell_Nature_AstralRecal")
-		self:ScheduleEvent("StriderWarn", "BigWigs_Message", 58, L["strider_soon_message"], "Attention")
+function mod:RepeatStrider(striderDelay)
+	if not striderDelay then
+		striderDelay = 45
 	end
-	self:ScheduleEvent("Strider", self.RepeatStrider, 63, self)
+	if db.strider then
+		self:Bar(L["strider_bar"], striderDelay, "Spell_Nature_AstralRecal")
+		self:ScheduleEvent("StriderWarn", "BigWigs_Message", striderDelay - 5, L["strider_soon_message"], "Attention")
+	end
+	self:ScheduleEvent("Strider", self.RepeatStrider, striderDelay, self)
 end
 
-function mod:RepeatNaga()
-	if db.naga then
-		self:Bar(L["naga_bar"], 47.5, "INV_Misc_MonsterHead_02")
-		self:ScheduleEvent("NagaWarn", "BigWigs_Message", 42.5, L["naga_soon_message"], "Attention")
+function mod:RepeatNaga(nagaDelay)
+	if not nagaDelay then
+		nagaDelay = 45
 	end
-	self:ScheduleEvent("Naga", self.RepeatNaga, 47.5, self)
+	if db.naga then
+		self:Bar(L["naga_bar"], nagaDelay, "INV_Misc_MonsterHead_02")
+		self:ScheduleEvent("NagaWarn", "BigWigs_Message", nagaDelay - 5, L["naga_soon_message"], "Attention")
+	end
+	self:ScheduleEvent("Naga", self.RepeatNaga, nagaDelay, self)
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
@@ -584,17 +612,19 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:Bar(L["elemental_bar"], 53, "Spell_Nature_ElementalShields")
 			delayedElementalMessage = self:DelayedMessage(48, L["elemental_soon_message"], "Important")
 		end
-		self:RepeatStrider()
-		self:RepeatNaga()
+		self:RepeatStrider(30)
+		self:RepeatNaga(30) -- first spawn is earlier
 	elseif string.find(msg, L["engage_trigger1"]) or string.find(msg, L["engage_trigger2"]) or string.find(msg, L["engage_trigger3"])
 		or string.find(msg, L["engage_trigger4"]) or string.find(msg, L["engage_trigger5"]) then
 
 		phaseTwoAnnounced = nil
 		shieldsFaded = 0
 		self:Message(L["engage_message"], "Attention")
+		self:Entangle()
 	elseif db.phase and string.find(msg, L["phase3_trigger"]) then
 		self:Message(L["phase3_message"], "Important", nil, "Alarm")
 		self:Enrage(240, nil, true)
+		self:Entangle()
 
 		self:CancelScheduledEvent("ElemWarn")
 		self:CancelScheduledEvent("StriderWarn")
