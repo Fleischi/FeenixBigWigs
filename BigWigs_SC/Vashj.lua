@@ -29,13 +29,13 @@ L:RegisterTranslations("enUS", function() return {
 	engage_trigger5 = "Death to the outsiders!",
 	engage_message = "Entering Phase 1",
 
-	entangle = "Entangle"
-	entangle_desc = "Warn about the cooldown of entangle"
-	entangle_bar = "~Entangle Cooldown~"
+	entangle = "Entangle",
+	entangle_desc = "Warn about the cooldown of entangle",
+	entangle_bar = "~Entangle Cooldown~",
 
-	shockblast = "Shock Blast warnings"
-	shockblast_desc = "Warn about the cooldown of Shock Blast"
-	shockblast_bar = "~Shock Blast Cooldown~"
+	shockblast = "Shock Blast warnings",
+	shockblast_desc = "Warn about the cooldown of Shock Blast",
+	shockblast_bar = "~Shock Blast Cooldown~",
 
 	phase = "Phase warnings",
 	phase_desc = "Warn when Vashj goes into the different phases.",
