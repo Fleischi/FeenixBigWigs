@@ -620,11 +620,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		phaseTwoAnnounced = nil
 		shieldsFaded = 0
 		self:Message(L["engage_message"], "Attention")
-		self:Entangle()
+		self:Entangled()
 	elseif db.phase and string.find(msg, L["phase3_trigger"]) then
 		self:Message(L["phase3_message"], "Important", nil, "Alarm")
 		self:Enrage(240, nil, true)
-		self:Entangle()
+		self:Entangled()
 
 		self:CancelScheduledEvent("ElemWarn")
 		self:CancelScheduledEvent("StriderWarn")
