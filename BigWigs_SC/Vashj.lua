@@ -580,7 +580,7 @@ end
 
 function mod:RepeatStrider(striderDelay)
 	if not striderDelay then
-		striderDelay = 40
+		striderDelay = 60
 	end
 	if db.strider then
 		self:Bar(L["strider_bar"], striderDelay, "Spell_Nature_AstralRecal")
