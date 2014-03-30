@@ -655,8 +655,8 @@ function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Pyro", 36815)
 	self:AddCombatListener("SPELL_AURA_REMOVE", "BarrierDown", 36815)
 	self:AddCombatListener("SPELL_CAST_START", "FearCast", 40636) -- was 44863 before, but seems to be 40636 see: <1383.4> SPELL_CAST_START:
-	self:AddCombatListener("SPELL_MISSED", "Fear", 44863)
-	self:AddCombatListener("SPELL_AURA_APPLIED", "Fear", 44863)
+	self:AddCombatListener("SPELL_MISSED", "Fear", 40636)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Fear", 40636)
 	self:AddCombatListener("UNIT_DIED", "Deaths")
 
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "CheckForWipe")
