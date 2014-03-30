@@ -42,7 +42,7 @@ L:RegisterTranslations("enUS", function() return {
 
 	gaze = "Gaze",
 	gaze_desc = "Warn when Thaladred focuses on a player.",
-	gaze_trigger = "sets eyes on (%S+)!$",
+	gaze_trigger = "sets his gaze on (%S+)!$",
 	gaze_message = "Gaze on %s!",
 	gaze_bar = "~Gaze cooldown",
 	gaze_you = "Gaze on YOU!",
@@ -59,7 +59,7 @@ L:RegisterTranslations("enUS", function() return {
 
 	rebirth = "Phoenix Rebirth",
 	rebirth_desc = "Approximate Phoenix Rebirth timers.",
-	rebirth_trigger1 = "Anar'anel belore!",
+	rebirth_trigger1 = "Anara'nel belore!",
 	rebirth_trigger2 = "By the power of the sun!",
 	rebirth_warning = "Possible Rebirth in ~5sec!",
 	rebirth_bar = "~Possible Rebirth",
@@ -80,7 +80,7 @@ L:RegisterTranslations("enUS", function() return {
 	sanguinar_inc_trigger = "You have persevered against some of my best advisors... but none can withstand the might of the Blood Hammer. Behold, Lord Sanguinar!",
 	capernian_inc_trigger = "Capernian will see to it that your stay here is a short one.",
 	telonicus_inc_trigger = "Well done, you have proven worthy to test your skills against my master engineer, Telonicus.",
-	weapons_inc_trigger = "As you see, I have many weapons in my arsenal....",
+	weapons_inc_trigger = "As you see, I have many weapons in my arsenal...",
 	phase3_trigger = "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor.",
 	phase4_trigger = "Alas, sometimes one must take matters into one's own hands. Balamore shanal!",
 
@@ -652,7 +652,9 @@ function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Toy", 37027)
 	self:AddCombatListener("SPELL_AURA_REMOVED", "ToyRemove", 37027)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "MC", 36797)
-	self:AddCombatListener("SPELL_CAST_START", "FearCast", 44863)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Pyro", 36815)
+	self:AddCombatListener("SPELL_AURA_REMOVE", "BarrierDown", 36815)
+	self:AddCombatListener("SPELL_CAST_START", "FearCast", 40636) -- was 44863 before, but seems to be 40636 see: <1383.4> SPELL_CAST_START:
 	self:AddCombatListener("SPELL_MISSED", "Fear", 44863)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Fear", 44863)
 	self:AddCombatListener("UNIT_DIED", "Deaths")
@@ -767,8 +769,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L["weapons_inc_trigger"] then
 		phase = 2
 		self:Message(L["weapons_inc_message"], "Positive")
-		self:Bar(L["revive_bar"], 95, "Spell_Holy_ReviveChampion")
-		self:DelayedMessage(90, L["revive_warning"], "Attention")
+		self:Bar(L["revive_bar"], 125, "Spell_Holy_ReviveChampion") -- Weapons spawn 5 seconds after death of last advisor
+		self:DelayedMessage(120, L["revive_warning"], "Attention") -- and it is 2 minutes from weapon spawn till advisor revive
 	elseif msg == L["phase3_trigger"] then
 		phase = 3
 		self:Message(L["phase3_message"], "Positive")
@@ -776,6 +778,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L["phase4_trigger"] then
 		phase = 4
 		self:Message(L["phase4_message"], "Positive")
+		if db.rebirth then
+			self:Bar(L["rebirth_bar"], 35, "Spell_Fire_Burnout")
+			self:DelayedMessage(30, L["rebirth_warning"], "Attention")
+		end
 		if db.pyro then
 			self:Bar(L["pyro"], 60, "Spell_Fire_Fireball02")
 			self:DelayedMessage(55, L["pyro_warning"], "Attention")
@@ -792,8 +798,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:Bar(L["gravity_bar"], 90, "Spell_Nature_UnrelentingStorm")
 	elseif db.rebirth and (msg == L["rebirth_trigger1"] or msg == L["rebirth_trigger2"]) then
 		self:Message(L["rebirth"], "Urgent")
-		self:Bar(L["rebirth_bar"], 45, "Spell_Fire_Burnout")
-		self:DelayedMessage(40, L["rebirth_warning"], "Attention")
+		self:Bar(L["rebirth_bar"], 40, "Spell_Fire_Burnout") 		-- Yells were between 34 and 48 seconds
+		self:DelayedMessage(35, L["rebirth_warning"], "Attention")
 	end
 end
 
@@ -802,6 +808,20 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		self:Bar(L["pyro"], 60, "Spell_Fire_Fireball02")
 		self:Message(L["pyro_message"], "Positive")
 		self:ScheduleEvent("PyroWarn", "BigWigs_Message", 55, L["pyro_warning"], "Attention")
+	end
+end
+
+function mod:Pyro()
+	if db.pyro then
+		self:Bar(L["pyro"], 60, "Spell_Fire_Fireball02")
+		self:Message(L["pyro_message"], "Positive")
+		self:ScheduleEvent("PyroWarn", "BigWigs_Message", 55, L["pyro_warning"], "Attention")
+	end
+end
+
+function mod:BarrierDown()
+	if db.pyro then
+		self:Message("BARRIER DOWN", "Positive")
 	end
 end
 
