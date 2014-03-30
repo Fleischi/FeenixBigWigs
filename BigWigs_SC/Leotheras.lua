@@ -427,7 +427,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:CancelScheduledEvent("BWLeoWhirlwind")
 			self:TriggerEvent("BigWigs_StopBar", self, L["whirlwind_bar"])
 			self:TriggerEvent("BigWigs_StopBar", self, L["whirlwind_bar2"])
-			self:ScheduleEvent("BWAfterDemon", self.WhirlwindBar, 60, self)
+			self:ScheduleEvent("BWAfterDemon", self.WhirlwindBar, 63, self)
 		end
 		if db.whisper then
 			self:Bar(L["whisper_soon"], 23, "Spell_Shadow_ManaFeed")
