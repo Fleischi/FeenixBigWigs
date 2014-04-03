@@ -1,0 +1,134 @@
+------------------------------------------------------------------------
+r23 | pneumatus | 2008-10-16 13:42:52 +0000 (Thu, 16 Oct 2008) | 1 line
+Changed paths:
+   A /tags/r23-beta (from /trunk:19)
+
+Tagging as r23-beta
+------------------------------------------------------------------------
+r19 | pneumatus | 2008-10-15 16:38:37 +0000 (Wed, 15 Oct 2008) | 2 lines
+Changed paths:
+   M /trunk
+   M /trunk/.pkgmeta
+   M /trunk/embeds.xml
+
+Broker2FuBar:
+- Fix missing libs
+------------------------------------------------------------------------
+r18 | root | 2008-09-30 23:06:43 +0000 (Tue, 30 Sep 2008) | 1 line
+Changed paths:
+   M /trunk
+   A /trunk/.pkgmeta
+
+Facilitate WowAce-on-CurseForge transition
+------------------------------------------------------------------------
+r16 | root | 2008-09-30 22:35:19 +0000 (Tue, 30 Sep 2008) | 1 line
+Changed paths:
+   D /tmp/trunk/Broker2FuBar
+   A /trunk (from /tmp/trunk/Broker2FuBar:15)
+
+Importing oldrepo data under /trunk
+------------------------------------------------------------------------
+r15 | sayclub | 2008-09-10 23:23:14 +0000 (Wed, 10 Sep 2008) | 2 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/options.lua
+
+Broker2FuBar:
+- fixed a typo in localization
+------------------------------------------------------------------------
+r14 | adirelle | 2008-09-10 18:31:13 +0000 (Wed, 10 Sep 2008) | 4 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/Broker2FuBar.toc
+   M /tmp/trunk/Broker2FuBar/core.lua
+   M /tmp/trunk/Broker2FuBar/pluginPrototype.lua
+
+Broker2FuBar:
+- only wrap launcher and data sources,
+- display label or name in tooltip if neither OnTooltipShow nor OnEnter is provided,
+- added a safety net to prevent evil things to happen when FuBar2Broker is loaded.
+------------------------------------------------------------------------
+r13 | adirelle | 2008-09-05 13:00:13 +0000 (Fri, 05 Sep 2008) | 3 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/pluginPrototype.lua
+
+Broker2FuBar:
+- fixed a bug where the plugin icon was not updated when the .icon attribute was changed,
+- the plugins now only register callbacks while enabled.
+------------------------------------------------------------------------
+r12 | adirelle | 2008-08-30 09:40:25 +0000 (Sat, 30 Aug 2008) | 3 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/Broker2FuBar.toc
+   M /tmp/trunk/Broker2FuBar/core.lua
+   M /tmp/trunk/Broker2FuBar/options.lua
+   A /tmp/trunk/Broker2FuBar/pluginPrototype.lua
+
+Broker2FuBar:
+- fixed error on plugin dragging,
+- do not create AceAddon-3.0 object on the fly anymore, use internal structure instead.
+------------------------------------------------------------------------
+r11 | adirelle | 2008-08-26 05:46:29 +0000 (Tue, 26 Aug 2008) | 3 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/core.lua
+
+Broker2FuBar:
+- provide the fubar plugin frame to :OnEnter / :OnClick method, instead of the FuBar panel.
+- dropped support of deprecated .tooltiptext attribute.
+------------------------------------------------------------------------
+r10 | adirelle | 2008-08-11 19:21:44 +0000 (Mon, 11 Aug 2008) | 1 line
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/core.lua
+   M /tmp/trunk/Broker2FuBar/options.lua
+
+Broker2FuBar: configuration is now working.
+------------------------------------------------------------------------
+r9 | adirelle | 2008-08-11 15:12:05 +0000 (Mon, 11 Aug 2008) | 6 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar
+   M /tmp/trunk/Broker2FuBar/Broker2FuBar.toc
+   M /tmp/trunk/Broker2FuBar/core.lua
+   A /tmp/trunk/Broker2FuBar/embeds.xml
+   A /tmp/trunk/Broker2FuBar/libs/LibFuBarPlugin-Mod-3.0
+   A /tmp/trunk/Broker2FuBar/libs/LibFuBarPlugin-Mod-3.0/LibFuBarPlugin-Mod-3.0.lua
+   A /tmp/trunk/Broker2FuBar/libs/LibFuBarPlugin-Mod-3.0/lib.xml
+   M /tmp/trunk/Broker2FuBar/options.lua
+
+Broker2FuBar:
+- added the options to disable the plugins (not fully working),
+- hard-embedded LibStub'd FuBarPlugin (so it should work without manual checkout),
+- fixed externals,
+- added embeds.xml.
+
+------------------------------------------------------------------------
+r8 | adirelle | 2008-08-10 23:09:08 +0000 (Sun, 10 Aug 2008) | 1 line
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/Broker2FuBar.toc
+   M /tmp/trunk/Broker2FuBar/core.lua
+   A /tmp/trunk/Broker2FuBar/options.lua
+
+Broker2FuBar: now provides some configuration.
+------------------------------------------------------------------------
+r7 | adirelle | 2008-08-10 22:05:54 +0000 (Sun, 10 Aug 2008) | 2 lines
+Changed paths:
+   M /tmp/trunk/Broker2FuBar/core.lua
+
+Broker2FuBar: added support for the following attributes : tooltip, tooltiptext, OnEnter, OnLeave.
+
+------------------------------------------------------------------------
+r6 | kemayo | 2008-08-03 23:49:26 +0000 (Sun, 03 Aug 2008) | 1 line
+Changed paths:
+   M /tmp/trunk/Broker2FuBar
+   M /tmp/trunk/Broker2FuBar/Broker2FuBar.toc
+
+Broker2FuBar: Externals, blah blah blah
+------------------------------------------------------------------------
+r5 | kemayo | 2008-08-03 23:40:30 +0000 (Sun, 03 Aug 2008) | 2 lines
+Changed paths:
+   A /tmp/trunk/Broker2FuBar
+   A /tmp/trunk/Broker2FuBar/Broker2FuBar.toc
+   A /tmp/trunk/Broker2FuBar/core.lua
+   A /tmp/trunk/Broker2FuBar/libs
+   A /tmp/trunk/Broker2FuBar/libs/LibDataBroker-1.1
+   A /tmp/trunk/Broker2FuBar/libs/LibDataBroker-1.1/LibDataBroker-1.1.lua
+
+Broker2FuBar: This is really, really rough.  It has no config.  But it does work.
+
+------------------------------------------------------------------------

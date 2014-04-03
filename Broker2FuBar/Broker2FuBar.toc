@@ -1,0 +1,17 @@
+## Interface: 20400
+## Title: Broker2FuBar
+## Notes: Shows your LDB sources in FuBar.
+## Author: Kemayo, Adirelle
+## Version: 1.0
+## X-Category: Miscellaneous
+## OptionalDeps: Ace3, LibFuBarPlugin-Mod-3.0, FuBar, FuBar2Broker
+## SavedVariables: Broker2FuBarDB
+
+embeds.xml
+
+libs\LibFuBarPlugin-Mod-3.0\lib.xml
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+
+core.lua
+pluginPrototype.lua
+options.lua
