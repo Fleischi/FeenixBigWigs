@@ -228,8 +228,8 @@ end
 function mod:ShieldOn(_, spellID)
 	if db.shield then
 		self:IfMessage(L["shield_warn"], "Important", spellID, "Alert")
-		self:DelayedMessage(46, L["shield_soon_warn"], "Positive")
-		self:Bar(L["shield_nextbar"], 56, spellID)
+		self:DelayedMessage(50, L["shield_soon_warn"], "Positive")
+		self:Bar(L["shield_nextbar"], 60, spellID)
 	end
 end
 

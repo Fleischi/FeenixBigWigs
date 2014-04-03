@@ -37,9 +37,10 @@ L:RegisterTranslations("enUS", function() return {
 
 	infernals = "Infernals",
 	infernals_desc = "Show cooldown timer for Infernal summons.",
+	infernal_trigger1 = "You face not Malchezaar alone, but the legions I command!",
+	infernal_trigger2 = "All realities, all dimensions are open to me!",
 	infernal_bar = "Incoming Infernal",
-	infernal_warning = "Infernal incoming in 17sec!",
-	infernal_message = "Infernal Landed! Hellfire in 5sec!",
+	infernal_warning = "Infernal incoming in 5sec!",
 
 	nova = "Shadow Nova",
 	nova_desc = "Estimated Shadow Nova timers.",
@@ -343,10 +344,8 @@ mod.revision = tonumber(("$Revision: 4723 $"):sub(12, -3))
 local wipe = nil
 function mod:OnEnable()
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Enfeeble", 30843)
-	self:AddCombatListener("SPELL_AURA_APPLIED", "SelfEnfeeble", 30843)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Enfeeble", 30843)
 	self:AddCombatListener("SPELL_CAST_START", "Nova", 30852)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Infernal", 30834)
 
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "CheckForWipe")
@@ -366,15 +365,12 @@ function mod:Enfeeble(player, spellID)
 		self:IfMessage(L["enfeeble_message"], "Important", spellID)
 		self:ScheduleEvent("enf1", "BigWigs_Message", 25, L["enfeeble_warning1"], "Attention")
 		self:ScheduleEvent("enf2", "BigWigs_Message", 20, L["enfeeble_warning2"], "Attention")
-		self:Bar(L["enfeeble_bar"], 7, spellID)
+		self:Bar(L["enfeeble_bar"], 9, spellID)
 		self:Bar(L["enfeeble_nextbar"], 30, spellID)
 	end
 	if self.db.profile.nova then
 		self:Bar(L["nova_bar"], 5, "Spell_Shadow_Shadowfury")
 	end
-end
-
-function mod:SelfEnfeeble(player, spellID)
 	if UnitIsUnit(player, "player") and self.db.profile.enfeeble then
 		self:LocalMessage(L["enfeeble_warnyou"], "Personal", spellID, "Alarm")
 	end
@@ -394,12 +390,11 @@ end
 
 function mod:Infernal()
 	if self.db.profile.infernals then
-		self:Message(L["infernal_warning"], "Positive")
-		self:DelayedMessage(12, L["infernal_message"], "Urgent", nil, "Alert")
-		self:Bar(L["infernal_bar"], 17, "INV_Stone_05")
+		self:DelayedMessage(40, L["infernal_warning"], "Urgent", nil, "Alert")
+		self:Bar(L["infernal_bar"], 45, "INV_Stone_05")
 	end
-	if not self.db.profile.despawn then
-		self:ScheduleEvent("BWInfernalDespawn", self.DespawnTimer, 17, self)
+	if self.db.profile.despawn then
+		self:DespawnTimer()
 	end
 end
 
@@ -417,6 +412,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:ScheduleEvent("enf2", "BigWigs_Message", 20, L["enfeeble_warning2"], "Attention")
 			self:Bar(L["enfeeble_nextbar"], 30, "Spell_Shadow_LifeDrain02")
 		end
+		if self.db.profile.infernals then
+			self:DelayedMessage(40, L["infernal_warning"], "Urgent", nil, "Alert")
+			self:Bar(L["infernal_bar"], 45, "INV_Stone_05")
+		end
+	elseif self.db.profile.infernals and (msg == L["infernal_trigger1"] or msg == L["infernal_trigger2"]) then
+		self:Infernal()
 	elseif self.db.profile.phase and msg == L["phase2_trigger"] then
 		self:Message(L["phase2_message"], "Positive")
 	elseif self.db.profile.phase and msg == L["phase3_trigger"] then

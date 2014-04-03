@@ -334,9 +334,9 @@ mod.revision = tonumber(("$Revision: 4706 $"):sub(12, -3))
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Spite", 41376, 41377)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Enrage", 41305)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Shield", 41431)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Shield", 41431)
 	self:AddCombatListener("SPELL_CAST_START", "Deaden", 41410)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Scream", 41545)
+	self:AddCombatListener("SPELL_DAMAGE", "Scream", 41545)
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
 
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
@@ -368,8 +368,8 @@ end
 function mod:Shield(_, spellID)
 	if db.runeshield then
 		self:IfMessage(L["runeshield_message"], "Attention", spellID)
-		self:Bar(L["runeshield_nextbar"], 15, spellID)
-		self:DelayedMessage(12, L["runeshield_warn"], "Urgent")
+		self:Bar(L["runeshield_nextbar"], 50, spellID)
+		self:DelayedMessage(45, L["runeshield_warn"], "Urgent")
 	end
 end
 
@@ -405,6 +405,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		if db.deaden then
 			self:Bar(L["deaden_nextbar"], 28, "Spell_Shadow_SoulLeech_1")
 			self:DelayedMessage(23, L["deaden_warn"], "Urgent")
+		end
+		if db.runeshield then
+			self:Bar(L["runeshield_nextbar"], 15, spellID)
+			self:DelayedMessage(10, L["runeshield_warn"], "Urgent")
 		end
 	end
 end

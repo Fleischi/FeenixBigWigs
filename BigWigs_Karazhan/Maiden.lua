@@ -13,12 +13,12 @@ local CheckInteractDistance = CheckInteractDistance
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Maiden",
 
-	engage_trigger = "Your behavior will not be tolerated.",
+	engage_trigger = "Your behavior will not be tolerated!",
 	engage_message = "Maiden Engaged! Repentance in ~33sec",
 
 	repentance = "Repentance",
 	repentance_desc = "Estimated timer of Repentance.",
-	repentance_message = "Repentance! Next in ~33sec",
+	repentance_message = "Repentance! Next in ~30sec",
 	repentance_warning = "Repentance Cooldown Over - Inc Soon!",
 	repentance_bar = "Repentance",
 	repentance_nextbar = "Repentance Cooldown",
@@ -184,7 +184,7 @@ mod.proximityCheck = function( unit ) return CheckInteractDistance( unit, 3 ) en
 function mod:OnEnable()
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
 	self:AddCombatListener("SPELL_AURA_APPLIED", "HolyFire", 29522)
-	self:AddCombatListener("SPELL_CAST_START", "Repentance", 29511)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Repentance", 29511)
 
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 end
@@ -206,8 +206,8 @@ function mod:Repentance(_, spellID)
 		self:TriggerEvent("BigWigs_StopBar", self, L["repentance_nextbar"])
 		self:IfMessage(L["repentance_message"], "Important", spellID)
 		self:Bar(L["repentance_bar"], 12, spellID)
-		self:ScheduleEvent("rep1", "BigWigs_Message", 33, L["repentance_warning"], "Urgent", nil, "Alarm")
-		self:Bar(L["repentance_nextbar"], 33, spellID)
+		self:ScheduleEvent("rep1", "BigWigs_Message", 30, L["repentance_warning"], "Urgent", nil, "Alarm")
+		self:Bar(L["repentance_nextbar"], 30, spellID)
 	end
 end
 
@@ -215,11 +215,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L["engage_trigger"] then
 		if self.db.profile.repentance then
 			self:Message(L["engage_message"], "Attention")
-			self:ScheduleEvent("rep1", "BigWigs_Message", 33, L["repentance_warning"], "Urgent", nil, "Alarm")
-			self:Bar(L["repentance_nextbar"], 33, 29511)
+			self:ScheduleEvent("rep1", "BigWigs_Message", 27, L["repentance_warning"], "Urgent", nil, "Alarm")
+			self:Bar(L["repentance_nextbar"], 27, 29511)
 		end
 
 		self:TriggerEvent("BigWigs_ShowProximity", self)
+	elseif msg == "Cast out your corrupt thoughts." then
+		self:Repentance(_, 29511)
 	end
 end
 

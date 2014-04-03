@@ -20,7 +20,7 @@ local db = nil
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Maulgar",
 
-	engage_trigger = "Gronn are the real power in Outland!",
+	engage_trigger = "Gronn are the real power in outland.",
 
 	heal = "Heal",
 	heal_desc = "Warn when Blindeye the Seer begins to cast a Heal.",
@@ -356,7 +356,7 @@ function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Whirlwind", 33238)
 	self:AddCombatListener("SPELL_CAST_START", "Summon", 33131)
 	self:AddCombatListener("SPELL_CAST_START", "Prayer", 33152)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Smash", 39144)
+	self:AddCombatListener("SPELL_DAMAGE", "Smash", 39144)
 	self:AddCombatListener("SPELL_CAST_SUCCESS", "Flurry", 33232)
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
 
@@ -387,15 +387,16 @@ function mod:Whirlwind(_, spellID)
 	if db.whirlwind then
 		self:IfMessage(L["whirlwind_message"], "Important", spellID)
 		self:Bar(L["whirlwind_bar"], 15, spellID)
-		self:DelayedMessage(45, L["whirlwind_warning2"], "Urgent")
-		self:Bar(L["whirlwind_nextbar"], 50, spellID)
+		self:DelayedMessage(30, L["whirlwind_warning2"], "Urgent")
+		self:Bar(L["whirlwind_nextbar"], 33, spellID)
 	end
 end
 
 function mod:Summon(_, spellID)
+	DEFAULT_CHAT_FRAME:AddMessage("Summon")
 	if db.summon then
 		self:IfMessage(L["summon_message"], "Attention", spellID, "Long")
-		self:Bar(L["summon_bar"], 50, spellID)
+		self:Bar(L["summon_bar"], 25, spellID)
 	end
 end
 
@@ -407,7 +408,7 @@ end
 
 function mod:Smash(_, spellID)
 	if db.smash then
-		self:Bar(L["smash_bar"], 10, spellID)
+		self:Bar(L["smash_bar"], 9, spellID)
 	end
 end
 
@@ -423,8 +424,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 
 		if db.whirlwind then
 			self:Message(L["whirlwind_warning1"], "Attention")
-			self:DelayedMessage(45, L["whirlwind_warning2"], "Urgent")
-			self:Bar(L["whirlwind_nextbar"], 50, 33238)
+			self:DelayedMessage(27, L["whirlwind_warning2"], "Urgent")
+			self:Bar(L["whirlwind_nextbar"], 30, 33238)
 		end
 		if db.spellshield then
 			self:Bar(L["spellshield_bar"], 30, 33054)

@@ -18,7 +18,7 @@ local CheckInteractDistance = CheckInteractDistance
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Solarian",
 
-	engage_trigger = "Tal anu'men no sin'dorei!",
+	engage_trigger = "Tal anu'men no Sin'dorei!",
 
 	phase = "Phase",
 	phase_desc = "Warn for phase changes.",
@@ -337,11 +337,20 @@ function mod:UNIT_HEALTH(msg)
 	end
 end
 
+function mod:split()
+	self:Message(L["agent_warning"], "Important")
+	self:Bar(L["agent_bar"], 9, "Ability_Creature_Cursed_01")
+
+	self:DelayedMessage(21, L["priest_warning"], "Important")
+	self:Bar(L["priest_bar"], 24, "Spell_Holy_HolyBolt")
+end
+
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg:find(L["phase2_trigger"]) then
 		if db.phase then
 			self:Message(L["phase2_message"], "Important")
 		end
+		self:CancelScheduledEvent("split2")
 		self:CancelScheduledEvent("split1")
 		self:TriggerEvent("BigWigs_StopBar", self, L["split_bar"])
 	elseif msg == L["engage_trigger"] then
@@ -352,18 +361,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			self:Bar(L["split_bar"], 50, "Spell_Shadow_SealOfKings")
 			self:DelayedMessage(43, L["split_warning"], "Important")
 		end
-	elseif db.split and (msg == L["split_trigger1"] or msg == L["split_trigger2"]) then
-		--split is around 90 seconds after the previous
-		self:Bar(L["split_bar"], 90, "Spell_Shadow_SealOfKings")
-		self:ScheduleEvent("split1", "BigWigs_Message", 83, L["split_warning"], "Important")
-
-		-- Agents 6 seconds after the Split
-		self:Message(L["agent_warning"], "Important")
-		self:Bar(L["agent_bar"], 6, "Ability_Creature_Cursed_01")
-
-		-- Priests 22 seconds after the Split
-		self:DelayedMessage(19, L["priest_warning"], "Important")
-		self:Bar(L["priest_bar"], 22, "Spell_Holy_HolyBolt")
+		if db.split then
+			self:ScheduleEvent("split2", "split", 50, self)
+		end
+	elseif db.split and msg == L["split_trigger1"] then
+		self:Bar(L["split_bar"], 50, "Spell_Shadow_SealOfKings")
+		self:ScheduleEvent("split2", "split", 50, self)
+		self:ScheduleEvent("split1", "BigWigs_Message", 43, L["split_warning"], "Important")
 	end
 end
 

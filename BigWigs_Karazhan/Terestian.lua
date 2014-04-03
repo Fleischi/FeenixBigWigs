@@ -215,8 +215,8 @@ function mod:Sacrifice(player, spellID)
 	if self.db.profile.sacrifice then
 		self:IfMessage(fmt(L["sacrifice_message"], player), "Attention", spellID)
 		self:Bar(fmt(L["sacrifice_bar"], player), 30, spellID)
-		self:ScheduleEvent("sac1", "BigWigs_Message", 40, L["sacrifice_soon"], "Positive")
-		self:Bar(L["sacrifice_soonbar"], 42, spellID)
+		self:ScheduleEvent("sac1", "BigWigs_Message", 27, L["sacrifice_soon"], "Positive")
+		self:Bar(L["sacrifice_soonbar"], 30, spellID)
 	end
 	self:Icon(player, "icon")
 end
@@ -224,7 +224,7 @@ end
 function mod:Weakened(_, spellID)
 	if self.db.profile.weak then
 		self:IfMessage(L["weak_message"], "Important", spellID, "Alarm")
-		self:ScheduleEvent("weak1", "BigWigs_Message", 40, L["weak_warning1"], "Attention")
+		self:ScheduleEvent("weak1", "BigWigs_Message", 42, L["weak_warning1"], "Attention")
 		self:Bar(L["weak_bar"], 45, spellID)
 	end
 end

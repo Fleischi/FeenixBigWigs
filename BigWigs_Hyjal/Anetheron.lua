@@ -201,8 +201,8 @@ end
 
 function mod:Inferno()
 	if db.inferno then
-		self:DelayedMessage(45, L["inferno_warning"], "Positive")
-		self:Bar(L["inferno_bar"], 50, 31299)
+		self:DelayedMessage(53, L["inferno_warning"], "Positive")
+		self:Bar(L["inferno_bar"], 58, 31299)
 		self:ScheduleEvent("BWInfernoToTScan", self.InfernoCheck, 0.5, self)
 	end
 end

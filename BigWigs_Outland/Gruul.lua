@@ -32,11 +32,11 @@ local bandages = {
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Gruul",
 
-	engage_trigger = "Come.... and die.",
+	engage_trigger = "Come... and die.",
 	engage_message = "%s Engaged!",
 
 	grow = "Grow",
-	grow_desc = "Count and warn for Grull's grow.",
+	grow_desc = "Count and warn for Gruul's grow.",
 	grow_message = "Grows: (%d)",
 	grow_bar = "Grow (%d)",
 
@@ -282,8 +282,9 @@ mod.proximitySilent = true
 
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "CaveIn", 36240)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Grow", 36300)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Silence", 36297)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Grow", 36300)
+	self:AddCombatListener("SPELL_AURA_APPLIED_DOSE", "Grow", 36300)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Silence", 36297)
 	self:AddCombatListener("SPELL_CAST_START", "Shatter", 33654)
 	self:AddCombatListener("SPELL_CAST_START", "Slam", 33525)
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
@@ -320,8 +321,8 @@ end
 function mod:Silence(_, spellID)
 	if db.silence then
 		self:IfMessage(L["silence_message"], "Attention", spellID)
-		self:DelayedMessage(28, L["silence_warning"], "Urgent")
-		self:Bar(L["silence_bar"], 31, spellID)
+		self:DelayedMessage(16, L["silence_warning"], "Urgent")
+		self:Bar(L["silence_bar"], 18, spellID)
 	end
 end
 
@@ -330,8 +331,8 @@ function mod:Shatter()
 
 	if db.grasp then
 		self:IfMessage(L["shatter_message"], "Positive", 33654)
-		self:DelayedMessage(56, L["grasp_warning"], "Urgent")
-		self:Bar(L["grasp_bar"], 62, 33525)
+		self:DelayedMessage(125, L["grasp_warning"], "Urgent")
+		self:Bar(L["grasp_bar"], 130, 33525)
 	end
 end
 
@@ -355,7 +356,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 
 		if db.grasp then
 			self:DelayedMessage(30, L["grasp_warning"], "Urgent")
-			self:Bar(L["grasp_bar"], 33, 33525)
+			self:Bar(L["grasp_bar"], 35, 33525)
 		end
 		if db.silence then
 			self:DelayedMessage(97, L["silence_warning"], "Urgent")

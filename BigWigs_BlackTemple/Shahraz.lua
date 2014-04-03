@@ -37,6 +37,9 @@ L:RegisterTranslations("enUS", function() return {
 
 	engage_trigger = "So... business or pleasure?",
 
+	attractionmarks = "Fatal Attraction Marks",
+	attractionmarks_desc = "Mark players who have Fatal Attraction.",
+
 	attraction = "Fatal Attraction",
 	attraction_desc = "Warn who has Fatal Attraction.",
 	attraction_message = "Attraction: %s",
@@ -154,7 +157,7 @@ local mod = BigWigs:NewModule(boss)
 mod.zonename = BZ["Black Temple"]
 mod.enabletrigger = boss
 mod.guid = 22947
-mod.toggleoptions = {"attraction", "debuff", "berserk", "enrage", "bosskill"}
+mod.toggleoptions = {"attraction", "attractionmarks", "debuff", "berserk", "enrage", "bosskill"}
 mod.revision = tonumber(sub("$Revision: 4706 $", 12, -3))
 
 ------------------------------
@@ -265,11 +268,16 @@ end
 
 function mod:AttractionWarn()
 	local msg = nil
+	local foo = 8
 	for k in pairs(attracted) do
 		if not msg then
 			msg = k
 		else
 			msg = msg .. ", " .. k
+		end
+		if db.attractionmarks then
+			SetRaidTarget(k, foo)
+			foo = foo - 1
 		end
 	end
 	self:IfMessage(L["attraction_message"]:format(msg), "Important", 41001, "Alert")

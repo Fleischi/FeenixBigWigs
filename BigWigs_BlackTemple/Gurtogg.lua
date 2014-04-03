@@ -281,7 +281,8 @@ mod.revision = tonumber(("$Revision: 4706 $"):sub(12, -3))
 ------------------------------
 
 function mod:OnEnable()
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Blood", 42005)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Blood", 42005)
+	self:AddCombatListener("SPELL_AURA_APPLIED_DOSE", "Blood", 42005)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Rage", 40604)
 	self:AddCombatListener("SPELL_AURA_REMOVED", "FelRageRemoved", 40594)
 	self:AddCombatListener("SPELL_CAST_START", "Acid", 40508)
@@ -296,13 +297,19 @@ end
 ------------------------------
 --      Event Handlers      --
 ------------------------------
+local lockblood = false
+function mod:resetblood()
+	lockblood = false
+end
 
 function mod:Blood(_, spellID)
-	if db.bloodboil then
+	if db.bloodboil and not lockblood then
 		self:IfMessage(fmt(L["bloodboil_message"], count), "Attention", spellID)
 		if count == 3 then count = 0 end
 		count = count + 1
 		self:Bar(fmt(L["bloodboil_message"], count), 10, spellID)
+		lockblood = true
+		self:ScheduleEvent("blood1", self.resetblood, 1, self)
 	end
 end
 
@@ -353,14 +360,14 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L["engage_trigger"] then
 		count = 1
 		if db.phase then
-			self:Bar(L["phase_normal_bar"], 49, "Spell_Fire_ElementalDevastation")
-			self:ScheduleEvent("rage1", "BigWigs_Message", 44, L["phase_rage_warning"], "Important")
+			self:Bar(L["phase_normal_bar"], 60, "Spell_Fire_ElementalDevastation")
+			self:ScheduleEvent("rage1", "BigWigs_Message", 55, L["phase_rage_warning"], "Important")
 		end
 		if db.enrage then
 			self:Enrage(600)
 		end
 		if db.bloodboil then
-			self:Bar(fmt(L["bloodboil_message"], count), 11, "Spell_Shadow_BloodBoil")
+			self:Bar(fmt(L["bloodboil_message"], count), 10, "Spell_Shadow_BloodBoil")
 		end
 	end
 end

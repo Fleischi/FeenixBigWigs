@@ -192,7 +192,7 @@ function mod:OnEnable()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "CheckForWipe")
 
-	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")
+	self:RegisterEvent("CHAT_MSG_RAID_BOSS_WHISPER")
 
 	started = nil
 	voidcount = 1
@@ -224,7 +224,7 @@ function mod:BigWigs_RecvSync(sync, rest, nick)
 			self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 		end
 		if self.db.profile.phase then
-			self:Bar(L["phase2_bar"], 60, "Spell_ChargePositive")
+			self:Bar(L["phase2_bar"], 55, "Spell_ChargePositive")
 		end
 		if self.db.profile.enrage then
 			self:Enrage(540)
@@ -232,13 +232,13 @@ function mod:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+function mod:CHAT_MSG_RAID_BOSS_WHISPER(msg)
 	if not self.db.profile.phase then return end
-	if msg == L["phase1_trigger"] then
+	if msg == string.format(L["phase1_trigger"], "Netherspite") then
 		self:TriggerEvent("BigWigs_StopBar", self, L["netherbreath_warn"])
 		self:Message(L["phase1_message"], "Important")
-		self:Bar(L["phase2_bar"], 58, "Spell_ChargePositive")
-	elseif msg == L["phase2_trigger"] then
+		self:Bar(L["phase2_bar"], 55, "Spell_ChargePositive")
+	elseif msg == string.format(L["phase2_trigger"], "Netherspite") then
 		self:Message(L["phase2_message"], "Important")
 		self:Bar(L["phase1_bar"], 30, "Spell_ChargeNegative")
 	end

@@ -191,7 +191,7 @@ mod.revision = tonumber(("$Revision: 4708 $"):sub(12, -3))
 
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "RainOfFire", 31340)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Howl", 31344)
+	self:AddCombatListener("SPELL_AURA_APPLIED", "Howl", 31344)
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Doom", 31347)
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
 
@@ -215,9 +215,9 @@ end
 
 function mod:Howl(_, spellID)
 	if db.howl then
-		self:IfMessage(L["howl_message"], "Important", spellID)
+		-- self:IfMessage(L["howl_message"], "Important", spellID)
 		self:Bar(L["howl_bar"], 16, spellID)
-		self:DelayedMessage(15, L["howl_warning"], "Important")
+		-- self:DelayedMessage(15, L["howl_warning"], "Important")
 	end
 end
 

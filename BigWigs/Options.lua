@@ -206,10 +206,10 @@ function ldb.OnClick(self, button)
 				local subGroup = nil
 				for i = 1, #zoneFunctions do
 					local zone = _G[zoneFunctions[i]]()
-					if zone and self.OnMenuRequest.args[zone] then
-						subGroup = zone
-						break
-					end
+--					if zone and self.OnMenuRequest.args[zone] then
+--						subGroup = zone
+--						break
+--					end
 				end
 				waterfall:Open("BigWigs", subGroup)
 			else
@@ -246,3 +246,6 @@ function ldb.OnTooltipShow(tt)
 	end
 end
 
+-- Shorthand slashcommand
+_G["SlashCmdList"]["BWOPTS_SHORTHAND"] = function() waterfall:Open("BigWigs") end
+_G["SLASH_BWOPTS_SHORTHAND1"] = "/bwop"

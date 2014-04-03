@@ -236,11 +236,12 @@ mod.revision = tonumber(("$Revision: 4620 $"):sub(12, -3))
 function mod:OnEnable()
 	self:AddCombatListener("SPELL_AURA_APPLIED", "Grave", 37850, 38023, 38024, 38025)
 	self:AddCombatListener("SPELL_CAST_START", "Tidal", 37730)
-	self:AddCombatListener("SPELL_CAST_SUCCESS", "Murlocs", 37764)
 	self:AddCombatListener("UNIT_DIED", "BossDeath")
 
 	self:RegisterEvent("UNIT_HEALTH")
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Globules")
+	self:RegisterEvent("CHAT_MSG_MONSTER_WHISPER", "Globules")
 
 	db = self.db.profile
 end
@@ -249,25 +250,30 @@ end
 --      Event Handlers      --
 ------------------------------
 
-function mod:Grave(player)
-	if db.grave then
-		inGrave[player] = true
-		self:ScheduleEvent("BWMoroGrave", self.GraveWarn, 0.4, self)
-	end
-end
-
 function mod:Tidal()
 	if db.tidal then
 		self:IfMessage(L["tidal_message"], "Urgent", 37730, "Alarm")
 	end
 end
 
+function mod:Globules(msg)
+	if db.globules and msg == "Morogrim Tidewalker summons Watery Globules!" then
+		self:Message(L["globules_message"], "Important", nil, "Alert")
+		self:Bar(L["globules_bar"], 25, "INV_Elemental_Primal_Water")
+	end
+end
+
+function mod:Grave()
+	self:Bar(L["grave_nextbar"], 31, 37850)
+	self:Bar(L["grave_bar"], 5.5, 37850)
+end
+
 function mod:Murlocs()
 	if db.murloc then
 		self:CancelScheduledEvent("murloc1")
 		self:IfMessage(L["murloc_message"], "Positive", 42365)
-		self:Bar(L["murloc_bar"], 51, 42365)
-		self:ScheduleEvent("murloc1", "BigWigs_Message", 51, L["murloc_soon_message"], "Attention")
+		self:Bar(L["murloc_bar"], 45, 42365)
+		self:ScheduleEvent("murloc1", "BigWigs_Message", 45, L["murloc_soon_message"], "Attention")
 	end
 end
 
@@ -277,31 +283,12 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		grobulealert = nil
 
 		if db.murloc then
-			self:Message(L["murloc_engaged"]:format(boss), "Positive")
-			self:Bar(L["murloc_bar"], 40, "INV_Misc_Head_Murloc_01")
+			self:Murlocs()
 		end
 		if db.grave then
-			self:Bar(L["grave_nextbar"], 20, "Spell_Frost_ArcticWinds")
-		end
-	elseif db.globules and (msg == L["globules_trigger1"] or msg == L["globules_trigger2"]) then
-		self:Message(L["globules_message"], "Important", nil, "Alert")
-		self:Bar(L["globules_bar"], 36, "INV_Elemental_Primal_Water")
-	end
-end
-
-function mod:GraveWarn()
-	local msg = nil
-	for k in pairs(inGrave) do
-		if not msg then
-			msg = k
-		else
-			msg = msg .. ", " .. k
+			self:Bar(L["grave_nextbar"], 31, "Spell_Frost_ArcticWinds")
 		end
 	end
-	self:IfMessage(L["grave_message"]:format(msg), "Important", 37850, "Alert")
-	self:Bar(L["grave_nextbar"], 28.5, 37850)
-	self:Bar(L["grave_bar"], 4.5, 37850)
-	for k in pairs(inGrave) do inGrave[k] = nil end
 end
 
 function mod:UNIT_HEALTH(msg)
